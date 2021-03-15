@@ -1,12 +1,30 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+#include "checker.h"
 
-/* IMPLEMENTER ATOI ET ISNUM */
-/* GERER "1 2 3", "1 2" "3"et "1" "2" "3" */
-/* PASSER LES STACKS EN CHAR** ET ECHANGER LES POINTEURS*/
+void	free_elem(t_op *instruction)
+{
+	if (instruction)
+	{
+		if (instruction->str)
+			free(instruction->str);
+		free(instruction);
+		instruction = NULL;
+	}
+}
 
-void	checker_error(int *stack)
+void	free_list(t_op *instructions)
+{
+	t_op	*current;
+
+	current = NULL;
+	while (instructions)
+	{
+		current = instructions;
+		instructions = instructions->next;
+		free_elem(current);
+	}
+}
+
+void	checker_error(long *stack)
 {
 	if (stack)
 		free(stack);
@@ -14,147 +32,7 @@ void	checker_error(int *stack)
 	exit(-1);
 }
 
-int		ft_isspace(int c)
-{
-	if ((c >= 9 && c <= 13) || c == 32)
-		return (1);
-	else
-		return (0);
-}
-
-size_t	ft_strlen(const char *s)
-{
-	unsigned int		i;
-
-	i = 0;
-	while (s[i] != '\0')
-		i++;
-	return (i);
-}
-
-/*int		ft_isnum(char *str)
-{
-	int		i;
-
-	i = 0;
-	if (ft_strlen(str) > 1 && str[i] == '-')
-	{
-		if (str[])
-	}
-	(c >= '0' && c <= '9')
-		return (1);
-	else
-		return (0);
-}*/
-
-int		ft_atoi(const char *str)
-{
-	int					i;
-	size_t				result;
-	int					sign;
-
-	i = 0;
-	result = 0;
-	sign = 1;
-	while (ft_isspace(str[i]))
-		i++;
-	if (str[i] == '-' || str[i] == '+')
-		sign = str[i++] == '-' ? -1 : 1;
-	while (str[i] >= '0' && str[i] <= '9')
-		result = (result * 10) + (str[i++] - 48);
-	return (result * sign);
-}
-
-void	*ft_memset(void *b, int c, size_t len)
-{
-	unsigned int	i;
-	unsigned char	uc;
-	unsigned char	*dst;
-
-	i = 0;
-	uc = c;
-	dst = b;
-	while (len--)
-		dst[i++] = uc;
-	return (b);
-}
-
-int		ft_abs(int n)
-{
-	return (n < 0 ? -(unsigned int)n : (unsigned int)n);
-}
-
-int		ft_ilen(int n)
-{
-	int				len;
-	unsigned int	nb;
-
-	len = 0;
-	if (n < 0)
-		len++;
-	nb = ft_abs(n);
-	while (nb > 9)
-	{
-		nb = nb / 10;
-		len++;
-	}
-	return (len + 1);
-}
-
-void	ft_putchar_fd(char c, int fd)
-{
-	write(fd, &c, 1);
-}
-
-void	ft_putnbr_fd(int n, int fd)
-{
-	unsigned int	nb;
-
-	if (n < 0)
-		ft_putchar_fd('-', fd);
-	nb = ft_abs(n);
-	if (nb > 9)
-		ft_putnbr_fd(nb / 10, fd);
-	ft_putchar_fd(nb % 10 + '0', fd);
-}
-
-void	ft_putstr_fd(char *s, int fd)
-{
-	if (!s || !fd)
-		return ;
-	write(fd, s, ft_strlen(s));
-}
-
-int		ft_count_tokens(const char *str, char c)
-{
-	int		count;
-	int		i;
-
-	count = 0;
-	i = 0;
-	while (str[i])
-	{
-		while (str[i] == c && str[i])
-			i++;
-		if (str[i] != c && str[i])
-		{
-			count++;
-			while (str[i] != c && str[i])
-				i++;
-		}
-	}
-	return (count);
-}
-
-/*int		checker_valid(int amount, int *stack)
-{
-	int		i;
-
-	i = 0;
-
-}*/
-
-int		checker_duplicate(int amount, int *stack, int value)
+int		checker_duplicate(int amount, long *stack, int value)
 {
 	int		i;
 
@@ -168,41 +46,81 @@ int		checker_duplicate(int amount, int *stack, int value)
 	return (0);
 }
 
-int		*checker_convert1(int *amount, char **values)
+int			ft_isnum(char *str)
 {
 	int		i;
+
+	i = 0;
+	if (str[i] == '-')
+	{
+		if (!str[i + 1])
+			return (0);
+		i++;
+	}
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
+void		checker_values(int amount, char **stack)
+{
+	int		i;
+	long	tmp;
+	long	*values;
+
+	i = 0;
+	tmp = 0;
+	if (!(values = malloc(sizeof(long) * (amount + 1))))
+		checker_error(NULL);
+	while (i < amount)
+	{
+		if (stack[i] && ft_isnum(stack[i]))
+		{
+			tmp = ft_atol(stack[i]);
+			if (checker_duplicate(i, values, tmp) == 1 ||
+						tmp < INT_MIN || tmp > INT_MAX)
+				checker_error(values);
+			else
+				values[i] = tmp;
+		}
+		else
+			checker_error(values);
+		i++;
+	}
+	free(values);
+}
+
+char	**checker_convert(int amount, char **args)
+{
+	char	**stack;
+	char	**tmp;
+	int		i;
 	int		j;
-	int		tmp;
-	int		*stack;
 
 	i = 0;
 	j = 0;
-	tmp = 0;
-	while (i < *amount - 1)
-		j += ft_count_tokens(values[i++], ' ');
-	printf("total amount of numbers=%d\n", j);
+	while (args[j])
+		i += ft_count_tokens(args[j++], ' ');
+	stack = malloc(sizeof(char*) * (i + 1));
 	i = 0;
-	if (!(stack = malloc(sizeof(int) * (j + 1))))
-		checker_error(NULL);
-	while (i < *amount - 1)
+	while (*args)
 	{
-		if (values[i])
-		{
-			while (values[i])
-				tmp = ft_atoi(values[i]);
-			if (checker_duplicate(i, stack, tmp) == 1)
-				checker_error(stack);
-			else
-				stack[i] = tmp;
-		}
-		else
-			checker_error(stack);
-		i++;
+		j = 0;
+		tmp = ft_split(*args, ' ');
+		while (tmp[j])
+			stack[i++] = ft_strdup(tmp[j++]);
+		free_tab(tmp);
+		args++;
 	}
+	stack[i] = NULL;
 	return (stack);
 }
 
-/*void	display_stacks(int amount, int *stack_a, int *stack_b)
+void	display_stacks(int amount, char **stack_a, char **stack_b)
 {
 	int		i;
 	int		len;
@@ -213,31 +131,176 @@ int		*checker_convert1(int *amount, char **values)
 	write(1, "      Stack A | Stack B\n", 25);
 	while (len < 12)
 			tab[len++] = ' ';
-	while (i < amount - 1)
+	while (i < amount)
 	{
 		tab[len] = '\0';
-		write(1, tab, 13 - ft_strlen(stack_a[i]));
-		ft_putstr_fd(stack_a[i], 1);
-		write(1, " | \n", 4);
+		if (stack_a[i])
+		{
+			write(1, tab, 13 - ft_strlen(stack_a[i]));
+			ft_putstr_fd(stack_a[i], 1);
+		}
+		write(1, " | ", 4);
+		if (stack_b[i])
+			ft_putstr_fd(stack_b[i], 1);
+		write(1, "\n", 1);
 		i++;
 	}
-}*/
+}
 
-void	checker_core(int tokens, char **values)
+void	is_sorted(char **stack)
 {
-	int		*stack_a;
-	int		*stack_b;
+	int		i;
 
-	stack_a = checker_convert1(&tokens, values);
-	stack_b = malloc(sizeof(int) * (tokens + 1));
+	i = 0;
+	while (stack[i])
+	{
+		if (!stack[i + 1])
+			break;
+		if (stack[i] && ft_atol(stack[i]) < ft_atol(stack[i + 1]))
+			i++;
+		else
+		{
+			write(1, "KO\n", 3);
+			return ;
+		}
+	}
+	write(1, "OK\n", 3);
+}
+
+t_op	*get_instructions(char **stack_a, char **stack_b)
+{
+	char	*buffer;
+	t_op	*instructions;
+	t_op	*first;
+
+	instructions = malloc(sizeof(t_op));
+	first = instructions;
+	while (get_next_line(0, &buffer) == 1)
+	{
+		instructions->str = buffer;
+		instructions->next = malloc(sizeof(t_op));
+		instructions = instructions->next;
+		instructions->str = NULL;
+		instructions->next = NULL;
+	}
+	free(buffer);
+	return (first);
+}
+
+void	swap(char **stack)
+{
+	char	*tmp;
+
+	if (stack && ft_tablen(stack) >= 2)
+	{
+		tmp = stack[0];
+		stack[0] = stack[1];
+		stack[1] = tmp;
+	}
+}
+
+void	align(char	**stack)
+{
+
+}
+
+void	push(char **dst, char **src)
+{
+	int		i;
+	char	*tmp;
+
+	i = 0;
+	if (ft_tablen(src))
+	{
+		if (!ft_tablen(dst))
+		{
+			dst[i] = src[i];
+			dst[i + 1] = NULL;
+			while (src[i])
+			{
+				src[i] = src[i + 1];
+				i++;
+			}
+			src[i] = NULL;
+		}
+		else
+		{
+			tmp = dst[0];
+			dst[0] = src[0];
+			while (++i < len)
+			{
+				tmp = dst[i + 1];
+				dst[i + 1] = dst[i];
+				dst[i] = tmp;
+			}
+			//dst = ;
+		}
+	}
+}
+
+void	operator(t_op *ops, char **stack_a, char **stack_b)
+{
+	t_op	*first;
+
+	first = ops;
+	while (ops->next)
+	{
+		if (!ft_strcmp(ops->str, "sa"))
+			swap(stack_a);
+		if (!ft_strcmp(ops->str, "sb"))
+			swap(stack_b);
+		if (!ft_strcmp(ops->str, "ss"))
+		{
+			swap(stack_a);
+			swap(stack_b);
+		}
+		if (!ft_strcmp(ops->str, "pa"))
+			push(stack_a, stack_b);
+		if (!ft_strcmp(ops->str, "pb"))
+			push(stack_b, stack_a);
+/*		if (!ft_strcmp(ops->str, "ra"))
+			rotate(stack_a, NULL);
+		if (!ft_strcmp(ops->str, "rb"))
+			rotate(NULL, stack_b);
+		if (!ft_strcmp(ops->str, "rr"))
+			rotate(stack_a, stack_b);
+		if (!ft_strcmp(ops->str, "rra"))
+			r_rotate(stack_a, NULL);
+		if (!ft_strcmp(ops->str, "rrb"))
+			r_rotate(NULL, stack_b);
+		if (!ft_strcmp(ops->str, "rrr"))
+			r_rotate(stack_a, stack_b);*/
+		write(1, "\n----------------------\nperforming operation -> ", 48);
+		write(1, ops->str, ft_strlen(ops->str));
+		write(1, "\n", 1);
+		ops = ops->next;
+		display_stacks(ft_tablen(stack_a), stack_a, stack_b);
+		is_sorted(stack_a); // ajouter verification de stack_b vide
+	}
+}
+
+void	checker_core(int tokens, char **args)
+{
+	char	**stack_a;
+	char	**stack_b;
+	t_op	*ops;
+
+	stack_a = checker_convert(tokens, args);
+	checker_values(ft_tablen(stack_a), stack_a);
+	stack_b = malloc(sizeof(char*) * (ft_tablen(stack_a) + 1));
+	stack_b[0] = NULL;
+	ops = get_instructions(stack_a, stack_b);
+	operator(ops, stack_a, stack_b);
+	free_tab(stack_a);
+	free_tab(stack_b);
+	free_list(ops);
 	/*if (checker_valid(amount, stack) == -1)
 		checker_error(stack);*/
-	//display_stacks(tokens, stack_a, stack_b);
 }
 
 int		main(int ac, char **av)
 {
-	if (ac != 2)
+	if (ac >= 2)
 	{
 		checker_core(ac, av + 1);
 	}
