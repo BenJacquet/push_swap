@@ -1,6 +1,8 @@
 #include "checker.h"
 
-void	free_elem(t_op *instruction)
+/* TROUVER POURQUOI LE DISPLAY DECONNE APRES UNE OPERATION*/
+
+void	free_op(t_op *instruction)
 {
 	if (instruction)
 	{
@@ -11,17 +13,48 @@ void	free_elem(t_op *instruction)
 	}
 }
 
-void	free_list(t_op *instructions)
+void	free_ops(t_op *instructions)
 {
 	t_op	*current;
 
 	current = NULL;
-	while (instructions)
+	if (instructions)
 	{
-		current = instructions;
-		instructions = instructions->next;
-		free_elem(current);
+		while (instructions)
+		{
+			current = instructions;
+			instructions = instructions->next;
+			free_op(current);
+		}
 	}
+}
+
+void	free_stack(t_stack *stack)
+{
+	t_stack	*current;
+
+	current = NULL;
+	while (stack)
+	{
+		current = stack;
+		stack = stack->next;
+		if (current->value)
+			free(current->value);
+		free(current);
+	}
+}
+
+int		stack_len(t_stack *stack)
+{
+	int		len;
+
+	len = 0;
+	while (stack)
+	{
+		stack = stack->next;
+		len++;
+	}
+	return (len);
 }
 
 void	checker_error(long *stack)
@@ -93,6 +126,77 @@ void		checker_values(int amount, char **stack)
 	}
 	free(values);
 }
+/*
+t_stack		*new_value(char *value)
+{
+	t_stack	*new;
+
+	new = malloc(sizeof(t_stack));
+	new->value = ft_strdup(value);
+	new->next = NULL;
+	return (new);
+}
+
+t_stack		*checker_convert(int amount, char **args)
+{
+	t_stack	*stack;
+	t_stack	*first;
+	t_stack	*prev;
+	char	**tmp;
+	int		i;
+
+	i = 0;
+	while (*args)
+	{
+		i = 0;
+		tmp = ft_split(*args, ' ');
+		while (tmp[i])
+		{
+			stack = new_value(tmp[i]);
+			if (i == 0)
+			{
+				first = stack;
+				prev = NULL;
+			}
+			else
+				prev = stack;
+			stack = stack->next;
+			stack->prev = prev;
+		}
+		free_tab(tmp);
+		args++;
+	}
+	for(stack = first, i = 0; stack ; stack = stack->next)
+		printf("element[%d]->  previous=[%p]  value=[%s](%p)  next=[%p]\n", i, stack->prev, stack->value, stack, stack->next);
+	return (first);
+}
+
+void	display_stacks(int amount, t_stack *stack_a, t_stack *stack_b)
+{
+	int		i;
+	int		len;
+	char	tab[13];
+
+	i = 0;
+	len = 0;
+	write(1, "      Stack A | Stack B\n", 25);
+	while (len < 12)
+			tab[len++] = ' ';
+	while (i < amount)
+	{
+		tab[len] = '\0';
+		if (stack_a[i])
+		{
+			write(1, tab, 13 - ft_strlen(stack_a[i]));
+			ft_putstr_fd(stack_a[i], 1);
+		}
+		write(1, " | ", 4);
+		if (stack_b && stack_b->value)
+			ft_putstr_fd(stack_b->value, 1);
+		write(1, "\n", 1);
+		i++;
+	}
+}*/
 
 char	**checker_convert(int amount, char **args)
 {
@@ -120,7 +224,7 @@ char	**checker_convert(int amount, char **args)
 	return (stack);
 }
 
-void	display_stacks(int amount, char **stack_a, char **stack_b)
+/*void	display_stacks(int amount, char **stack_a, char **stack_b)
 {
 	int		i;
 	int		len;
@@ -145,18 +249,49 @@ void	display_stacks(int amount, char **stack_a, char **stack_b)
 		write(1, "\n", 1);
 		i++;
 	}
+}*/
+
+void	display_stacks(int amount, char **stack_a, char **stack_b)
+{
+	int		i;
+	int		j;
+	int		len;
+	char	tab[26];
+
+	i = 0;
+	write(1, "      Stack A | Stack B\n", 25);
+	while (i < amount)
+	{
+		j = 0;
+		ft_memset(tab, ' ', 25);
+		tab[25] = '\0';
+		if (stack_a[i])
+		{
+			len = ft_strlen(stack_a[i]);
+			j = 13 - len;
+			ft_strcpy(tab + j, stack_a[i]);
+			j += len;
+		}
+		ft_strcpy(tab + j, " | ");
+		j = 14;
+		if (i < ft_tablen(stack_b))
+			ft_strcpy(tab + j, stack_b[i]);
+		ft_putstr_fd(tab, 1);
+		write(1, "\n", 1);
+		i++;
+	}
 }
 
-void	is_sorted(char **stack)
+void	is_sorted(char **stack_a, char **stack_b)
 {
 	int		i;
 
 	i = 0;
-	while (stack[i])
+	while (stack_a[i])
 	{
-		if (!stack[i + 1])
+		if (!stack_a[i + 1])
 			break;
-		if (stack[i] && ft_atol(stack[i]) < ft_atol(stack[i + 1]))
+		if (stack_a[i] && ft_atol(stack_a[i]) < ft_atol(stack_a[i + 1]))
 			i++;
 		else
 		{
@@ -164,16 +299,22 @@ void	is_sorted(char **stack)
 			return ;
 		}
 	}
+	if (stack_b)
+	{
+		write(1, "KO\n", 3);
+		return ;
+	}
 	write(1, "OK\n", 3);
 }
 
-t_op	*get_instructions(char **stack_a, char **stack_b)
+t_op	*get_instructions()
 {
 	char	*buffer;
 	t_op	*instructions;
 	t_op	*first;
 
 	instructions = malloc(sizeof(t_op));
+	instructions->next = NULL;
 	first = instructions;
 	while (get_next_line(0, &buffer) == 1)
 	{
@@ -221,9 +362,12 @@ void	push(char **dst, char **src)
 				src[i] = src[i + 1];
 				i++;
 			}
-			src[i] = NULL;
 		}
-		else
+		write(1, "src=\n", 5);
+		ft_puttab(src);
+		write(1, "dst=\n", 5);
+		ft_puttab(dst);
+/*		else
 		{
 			tmp = dst[0];
 			dst[0] = src[0];
@@ -234,11 +378,72 @@ void	push(char **dst, char **src)
 				dst[i] = tmp;
 			}
 			//dst = ;
-		}
+		}*/
 	}
 }
 
 void	operator(t_op *ops, char **stack_a, char **stack_b)
+{
+	t_op	*first;
+
+	first = ops;
+	while (ops->next)
+	{
+		if (!ft_strcmp(ops->str, "sa"))
+			swap(stack_a);
+		else if (!ft_strcmp(ops->str, "sb"))
+			swap(stack_b);
+		else if (!ft_strcmp(ops->str, "ss"))
+		{
+			swap(stack_a);
+			swap(stack_b);
+		}
+		else if (!ft_strcmp(ops->str, "pa"))
+			push(stack_a, stack_b);
+		else if (!ft_strcmp(ops->str, "pb"))
+			push(stack_b, stack_a);
+/*		else if (!ft_strcmp(ops->str, "ra"))
+			rotate(stack_a, NULL);
+		else if (!ft_strcmp(ops->str, "rb"))
+			rotate(NULL, stack_b);
+		else if (!ft_strcmp(ops->str, "rr"))
+			rotate(stack_a, stack_b);
+		else if (!ft_strcmp(ops->str, "rra"))
+			r_rotate(stack_a, NULL);
+		else if (!ft_strcmp(ops->str, "rrb"))
+			r_rotate(NULL, stack_b);
+		else if (!ft_strcmp(ops->str, "rrr"))
+			r_rotate(stack_a, stack_b);*/
+		write(1, "\n----------------------\nperforming operation -> ", 48);
+		write(1, ops->str, ft_strlen(ops->str));
+		write(1, "\n", 1);
+		ops = ops->next;
+		display_stacks(ft_tablen(stack_a), stack_a, stack_b);
+		is_sorted(stack_a, stack_b); // ajouter verification de stack_b vide
+	}
+}
+
+void	checker_core(int tokens, char **args)
+{
+	char	**stack_a = NULL;
+	char	**stack_b = NULL;
+	t_op	*ops;
+
+	stack_a = checker_convert(tokens, args);
+	checker_values(ft_tablen(stack_a), stack_a);
+	stack_b = malloc(sizeof(char*) * (ft_tablen(stack_a) + 1));
+	stack_b[0] = NULL;
+	ops = get_instructions();
+	operator(ops, stack_a, stack_b);
+	free_tab(stack_a);
+	free_tab(stack_b);
+	free_ops(ops);
+	/*if (checker_valid(amount, stack) == -1)
+		checker_error(stack);*/
+}
+
+/*
+void	operator(t_op *ops, t_stack **stack_a, t_stack **stack_b)
 {
 	t_op	*first;
 
@@ -258,7 +463,7 @@ void	operator(t_op *ops, char **stack_a, char **stack_b)
 			push(stack_a, stack_b);
 		if (!ft_strcmp(ops->str, "pb"))
 			push(stack_b, stack_a);
-/*		if (!ft_strcmp(ops->str, "ra"))
+		if (!ft_strcmp(ops->str, "ra"))
 			rotate(stack_a, NULL);
 		if (!ft_strcmp(ops->str, "rb"))
 			rotate(NULL, stack_b);
@@ -269,7 +474,7 @@ void	operator(t_op *ops, char **stack_a, char **stack_b)
 		if (!ft_strcmp(ops->str, "rrb"))
 			r_rotate(NULL, stack_b);
 		if (!ft_strcmp(ops->str, "rrr"))
-			r_rotate(stack_a, stack_b);*/
+			r_rotate(stack_a, stack_b);
 		write(1, "\n----------------------\nperforming operation -> ", 48);
 		write(1, ops->str, ft_strlen(ops->str));
 		write(1, "\n", 1);
@@ -277,26 +482,25 @@ void	operator(t_op *ops, char **stack_a, char **stack_b)
 		display_stacks(ft_tablen(stack_a), stack_a, stack_b);
 		is_sorted(stack_a); // ajouter verification de stack_b vide
 	}
-}
+}*/
 
+/*
 void	checker_core(int tokens, char **args)
 {
-	char	**stack_a;
-	char	**stack_b;
-	t_op	*ops;
+	t_stack		*stack_a;
+	t_stack		*stack_b;
+	t_op		*ops;
 
 	stack_a = checker_convert(tokens, args);
 	checker_values(ft_tablen(stack_a), stack_a);
-	stack_b = malloc(sizeof(char*) * (ft_tablen(stack_a) + 1));
-	stack_b[0] = NULL;
-	ops = get_instructions(stack_a, stack_b);
-	operator(ops, stack_a, stack_b);
-	free_tab(stack_a);
-	free_tab(stack_b);
-	free_list(ops);
-	/*if (checker_valid(amount, stack) == -1)
-		checker_error(stack);*/
-}
+	ops = get_instructions();
+	//operator(ops, stack_a, stack_b);
+	display_stacks(ft_tablen(stack_a), stack_a, stack_b);
+	free_stack(stack_a);
+	free_ops(ops);
+	if (checker_valid(amount, stack) == -1)
+		checker_error(stack);
+}*/
 
 int		main(int ac, char **av)
 {

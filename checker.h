@@ -17,9 +17,8 @@ typedef	struct	s_op
 typedef struct s_stack
 {
 	char		*value;
-	void		*preview;
+	void		*prev;
 	void		*next;
 }				t_stack;
-
 
 # endif
