@@ -256,15 +256,15 @@ void	display_stacks(int amount, char **stack_a, char **stack_b)
 	int		i;
 	int		j;
 	int		len;
-	char	tab[26];
+	char	tab[27];
 
 	i = 0;
 	write(1, "      Stack A | Stack B\n", 25);
 	while (i < amount)
 	{
 		j = 0;
-		ft_memset(tab, ' ', 25);
-		tab[25] = '\0';
+		ft_memset(tab, ' ', 26);
+		tab[26] = '\0';
 		if (stack_a[i])
 		{
 			len = ft_strlen(stack_a[i]);
@@ -273,7 +273,7 @@ void	display_stacks(int amount, char **stack_a, char **stack_b)
 			j += len;
 		}
 		ft_strcpy(tab + j, " | ");
-		j = 14;
+		j += 3;
 		if (i < ft_tablen(stack_b))
 			ft_strcpy(tab + j, stack_b[i]);
 		ft_putstr_fd(tab, 1);
@@ -342,18 +342,29 @@ void	swap(char **stack)
 
 void	align(char	**stack)
 {
+	char	*tmp;
+	int		i;
 
+	i = 0;
+	while (stack[i])
+	{
+		stack[i] = stack[i + 1];
+		printf("moved %s\n", stack[i]);
+		i++;
+	}
 }
 
 void	push(char **dst, char **src)
 {
 	int		i;
+	int		len;
 	char	*tmp;
 
 	i = 0;
 	if (ft_tablen(src))
 	{
-		if (!ft_tablen(dst))
+		len = ft_tablen(dst);
+		if (!len)
 		{
 			dst[i] = src[i];
 			dst[i + 1] = NULL;
@@ -363,22 +374,17 @@ void	push(char **dst, char **src)
 				i++;
 			}
 		}
-		write(1, "src=\n", 5);
-		ft_puttab(src);
-		write(1, "dst=\n", 5);
-		ft_puttab(dst);
-/*		else
+		else
 		{
-			tmp = dst[0];
-			dst[0] = src[0];
-			while (++i < len)
+			while (len > 0)
 			{
-				tmp = dst[i + 1];
-				dst[i + 1] = dst[i];
-				dst[i] = tmp;
+				tmp = dst[len];
+				dst[len] = dst[len - 1];
+				len--;
 			}
-			//dst = ;
-		}*/
+			dst[0] = src[0];
+			align(src);
+		}
 	}
 }
 
@@ -435,8 +441,8 @@ void	checker_core(int tokens, char **args)
 	stack_b[0] = NULL;
 	ops = get_instructions();
 	operator(ops, stack_a, stack_b);
-	free_tab(stack_a);
-	free_tab(stack_b);
+	//free_tab(stack_a);
+	//free_tab(stack_b);
 	free_ops(ops);
 	/*if (checker_valid(amount, stack) == -1)
 		checker_error(stack);*/
