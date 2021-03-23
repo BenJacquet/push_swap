@@ -340,25 +340,55 @@ void	swap(char **stack)
 	}
 }
 
-void	align(char	**stack)
+void	align(char	**stack, int len, int mode)
 {
-	char	*tmp;
 	int		i;
+	char	*tmp;
 
 	i = 0;
-	while (stack[i])
+	if (mode == 0)
 	{
-		stack[i] = stack[i + 1];
-		printf("moved %s\n", stack[i]);
-		i++;
+		/*
+		ft_putstr_fd("stack[", 1);
+		ft_putnbr_fd(len, 1);
+		ft_putstr_fd("]=[", 1);
+		ft_putstr_fd(stack[len], 1);
+		ft_putstr_fd("]\n", 1);
+		stack[len + 1] = NULL;
+		while (len > 0)
+		{
+			stack[len] = stack[len - 1];
+			len--;
+		}
+		for (int j = 0; stack[j]; j++)
+			printf("stack[%d]=%s\n", j, stack[j]);*/
+		//tmp = stack[0];
+		i = len - 1;
+		ft_putstr_fd("len=", 1);
+		ft_putnbr_fd(len, 1);
+		ft_putstr_fd("\n", 1);
+		while (i > 0)
+		{
+			stack[i] = stack[i - 1];
+			i--;
+		}
+		stack[len] = NULL;
 	}
+	if (mode == 1)
+	{
+		while (i < len - 1)
+		{
+			stack[i] = stack[i + 1];
+			i++;
+		}
+	}
+	stack[i] = NULL;
 }
 
 void	push(char **dst, char **src)
 {
 	int		i;
 	int		len;
-	char	*tmp;
 
 	i = 0;
 	if (ft_tablen(src))
@@ -368,22 +398,13 @@ void	push(char **dst, char **src)
 		{
 			dst[i] = src[i];
 			dst[i + 1] = NULL;
-			while (src[i])
-			{
-				src[i] = src[i + 1];
-				i++;
-			}
+			align(src, ft_tablen(src), 1);
 		}
 		else
 		{
-			while (len > 0)
-			{
-				tmp = dst[len];
-				dst[len] = dst[len - 1];
-				len--;
-			}
+			align(dst, ft_tablen(dst) + 1, 0);
 			dst[0] = src[0];
-			align(src);
+			align(src, ft_tablen(src), 1);
 		}
 	}
 }
@@ -391,7 +412,6 @@ void	push(char **dst, char **src)
 void	operator(t_op *ops, char **stack_a, char **stack_b)
 {
 	t_op	*first;
-
 	first = ops;
 	while (ops->next)
 	{
@@ -420,9 +440,9 @@ void	operator(t_op *ops, char **stack_a, char **stack_b)
 			r_rotate(NULL, stack_b);
 		else if (!ft_strcmp(ops->str, "rrr"))
 			r_rotate(stack_a, stack_b);*/
-		write(1, "\n----------------------\nperforming operation -> ", 48);
+		write(1, "\n----------------------\nperformed operation -> ", 48);
 		write(1, ops->str, ft_strlen(ops->str));
-		write(1, "\n", 1);
+		write(1, "\nRESULTS:\n", 10);
 		ops = ops->next;
 		display_stacks(ft_tablen(stack_a), stack_a, stack_b);
 		is_sorted(stack_a, stack_b); // ajouter verification de stack_b vide
