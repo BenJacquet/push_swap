@@ -363,7 +363,7 @@ void	align(char	**stack, int len, int mode)
 		for (int j = 0; stack[j]; j++)
 			printf("stack[%d]=%s\n", j, stack[j]);*/
 		//tmp = stack[0];
-		i = len - 1;
+		i = len;
 		ft_putstr_fd("len=", 1);
 		ft_putnbr_fd(len, 1);
 		ft_putstr_fd("\n", 1);
@@ -372,7 +372,7 @@ void	align(char	**stack, int len, int mode)
 			stack[i] = stack[i - 1];
 			i--;
 		}
-		stack[len] = NULL;
+		stack[len + 1] = NULL;
 	}
 	if (mode == 1)
 	{
@@ -402,7 +402,7 @@ void	push(char **dst, char **src)
 		}
 		else
 		{
-			align(dst, ft_tablen(dst) + 1, 0);
+			align(dst, ft_tablen(dst), 0);
 			dst[0] = src[0];
 			align(src, ft_tablen(src), 1);
 		}
