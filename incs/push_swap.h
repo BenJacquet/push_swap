@@ -6,7 +6,7 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 13:56:56 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 15:16:15 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 16:45:41 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,8 @@ t_op			*get_instructions();
 void			get_stack(t_stack *a, int amount, char **stack);
 void			parse_args(t_stack *a, char **args);
 int				ft_isnum(char *str);
+void			check_null(char **args);
+int				only_char(char *str, char c);
 
 /*
 ** -------------------------------------------------------------------------

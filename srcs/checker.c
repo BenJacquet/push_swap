@@ -6,7 +6,7 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 13:56:20 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 15:54:13 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 16:39:21 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	checker_core(char **args)
 	t_stack	b;
 	t_op	*ops;
 
+	check_null(args);
 	parse_args(&a, args);
 	b.values = malloc(sizeof(int) * (a.size));
 	b.size = 0;
