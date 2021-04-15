@@ -6,13 +6,13 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 13:56:52 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 13:56:52 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 15:23:07 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../incs/push_swap.h"
 
-int			ft_isnum(char *str)
+int		ft_isnum(char *str)
 {
 	int		i;
 

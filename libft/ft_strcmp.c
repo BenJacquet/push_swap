@@ -6,13 +6,13 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/07/28 15:14:14 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/03/17 10:23:16 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 15:19:08 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-int ft_strcmp(char *s1, char *s2)
+int		ft_strcmp(char *s1, char *s2)
 {
-	int i;
+	int	i;
 
 	i = 0;
 	while ((s1[i] && s2[i]) && s1[i] == s2[i])

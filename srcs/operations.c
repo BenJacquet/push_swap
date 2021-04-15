@@ -6,7 +6,7 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 13:56:34 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 14:24:10 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 15:21:48 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ void	rotate(t_stack *stack)
 			stack->values[i] = stack->values[i + 1];
 			i++;
 		}
-		stack->values[stack->size - 1] = tmp; 
+		stack->values[stack->size - 1] = tmp;
 	}
 }
 

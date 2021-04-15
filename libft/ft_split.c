@@ -6,13 +6,13 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/08 18:36:36 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/03/10 11:21:49 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 15:25:21 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		ft_toklen(const char *s, char c)
+int			ft_toklen(const char *s, char c)
 {
 	int		len;
 
@@ -22,7 +22,7 @@ int		ft_toklen(const char *s, char c)
 	return (len);
 }
 
-int		ft_free_words(char **words)
+int			ft_free_words(char **words)
 {
 	int		i;
 
@@ -33,7 +33,7 @@ int		ft_free_words(char **words)
 	return (0);
 }
 
-int		ft_count_tokens(const char *str, char c)
+int			ft_count_tokens(const char *str, char c)
 {
 	int		count;
 	int		i;
@@ -54,7 +54,7 @@ int		ft_count_tokens(const char *str, char c)
 	return (count);
 }
 
-char	*ft_fill_words(char *word, const char *s, char c)
+char		*ft_fill_words(char *word, const char *s, char c)
 {
 	unsigned int	i;
 	unsigned int	j;
@@ -71,9 +71,8 @@ char	*ft_fill_words(char *word, const char *s, char c)
 	return (word);
 }
 
-char	**ft_split(char const *s, char c)
+char		**ft_split(char const *s, char c)
 {
-	
 	unsigned int	i;
 	unsigned int	j;
 	char			**words;
@@ -83,10 +82,7 @@ char	**ft_split(char const *s, char c)
 	if (!s)
 		return (0);
 	if (!(words = malloc(sizeof(char *) * (ft_count_tokens(s, c) + 1))))
-	{
-		ft_free_words(words);
 		return (0);
-	}
 	while (s[j])
 	{
 		while (s[j] == c && s[j])

@@ -6,7 +6,7 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 13:56:39 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 13:56:40 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 15:21:04 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ t_op		*split_instructions(char **split)
 	return (first);
 }
 
-t_op		*get_instructions()
+t_op		*get_instructions(void)
 {
 	char	buffer[4097];
 	char	*joined;

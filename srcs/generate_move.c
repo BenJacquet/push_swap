@@ -6,7 +6,7 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 13:56:28 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 13:56:29 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 15:22:38 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,8 @@ void	adjust_moves(t_stack *a, t_stack *b, t_conf *tmp, t_pos pos)
 		if (pos.a > a->size / 2)
 		{
 			tmp->a_mov = 1;
-			tmp->a_moves = (highest == pos.a ? a->size - highest - 1: a->size - pos.a - 1);
+			tmp->a_moves = (highest == pos.a ?
+				a->size - highest - 1 : a->size - pos.a - 1);
 		}
 		else
 		{
@@ -55,7 +56,7 @@ void	adjust_moves(t_stack *a, t_stack *b, t_conf *tmp, t_pos pos)
 	}
 }
 
-void	get_conf(t_stack *a, t_stack *b, t_conf	*conf, t_pos pos)
+void	get_conf(t_stack *a, t_stack *b, t_conf *conf, t_pos pos)
 {
 	int		clo_p;
 	t_conf	tmp;
@@ -93,7 +94,8 @@ void	best_rotation(t_stack *a, t_stack *b)
 	conf.a_mov = 0;
 	conf.b_mov = 0;
 	conf.first = 1;
-	if (!(find_highest(a) == a->size - 1 && a->values[a->size - 1] < b->values[0]))
+	if (!(find_highest(a) == a->size - 1 &&
+		a->values[a->size - 1] < b->values[0]))
 	{
 		while (pos.a < a->size)
 		{
