@@ -6,7 +6,7 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 13:56:34 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 13:56:34 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 14:24:10 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,64 +59,40 @@ void	push(t_stack *dst, t_stack *src)
 		}
 	}
 }
-/*
-void	rotate(t_stack *stack, int reverse)
-{
-	int		len;
-	int		tmp;
-	int		i;
 
-	len = stack->size;
-	i = 0;
+void	reverse_rotate(t_stack *stack)
+{
+	int		tmp;
+	int		len;
+
 	if (stack->size)
 	{
-		if (reverse)
+		len = stack->size;
+		tmp = stack->values[len - 1];
+		while (len - 1 > 0)
 		{
-			tmp = stack->values[len - 1];
-			while (len - 1 > 0)
-			{
-				stack->values[len - 1] = stack->values[len - 2];
-				len--;
-			}
-			stack->values[len - 1] = tmp; 
+			stack->values[len - 1] = stack->values[len - 2];
+			len--;
 		}
-		else
-		{
-			tmp = stack->values[0];
-			while (i + 1 < stack->size)
-			{
-				stack->values[i] = stack->values[i + 1];
-				i++;
-			}
-			stack->values[stack->size - 1] = tmp; 
-		}
+		stack->values[len - 1] = tmp;
 	}
-}*/
+}
 
-void	rotate(t_stack *stack, int reverse)
+void	rotate(t_stack *stack)
 {
-	int		len;
 	int		tmp;
 	int		i;
 
-	len = stack->size + 1;
-	i = -1;
 	if (stack->size)
 	{
-		if (reverse)
+		i = 0;
+		tmp = stack->values[0];
+		while (i + 1 < stack->size)
 		{
-			tmp = stack->values[len - 1];
-			while (--len - 1 > 0)
-				stack->values[len - 1] = stack->values[len - 2];
-			stack->values[len - 1] = tmp; 
+			stack->values[i] = stack->values[i + 1];
+			i++;
 		}
-		else
-		{
-			tmp = stack->values[0];
-			while (++i + 1 < stack->size)
-				stack->values[i] = stack->values[i + 1];
-			stack->values[stack->size - 1] = tmp; 
-		}
+		stack->values[stack->size - 1] = tmp; 
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 13:56:56 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 13:58:03 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 14:24:42 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,8 @@ int		smaller(int a, int b);
 */
 
 void	swap(t_stack *stack);
-void	rotate(t_stack *stack, int reverse);
+void	rotate(t_stack *stack);
+void	reverse_rotate(t_stack *stack);
 void	push(t_stack *dst, t_stack *src);
 void	align(t_stack *stack, int mode);
 void	operator(t_op *ops, t_stack *a, t_stack *b);
