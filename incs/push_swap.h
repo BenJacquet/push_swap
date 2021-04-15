@@ -6,7 +6,7 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 13:56:56 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 16:45:41 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 17:02:25 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ void			rotate(t_stack *stack);
 void			reverse_rotate(t_stack *stack);
 void			push(t_stack *dst, t_stack *src);
 void			align(t_stack *stack, int mode);
-void			operator(t_op *ops, t_stack *a, t_stack *b);
+int				operator(t_op *ops, t_stack *a, t_stack *b);
 int				operator_2(t_op *ops, t_stack *a, t_stack *b);
 int				operator_3(t_op *ops, t_stack *a, t_stack *b);
 

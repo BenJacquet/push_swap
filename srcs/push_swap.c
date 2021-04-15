@@ -6,7 +6,7 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/13 15:23:17 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 15:20:35 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 17:10:29 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int		push_swap(char **args)
 	t_stack	a;
 	t_stack	b;
 
+	check_null(args);
 	parse_args(&a, args);
 	b.values = malloc(sizeof(int) * (a.size));
 	b.size = 0;

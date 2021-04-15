@@ -6,7 +6,7 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 13:56:20 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 16:39:21 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 17:02:47 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ void	checker_core(char **args)
 	b.values = malloc(sizeof(int) * (a.size));
 	b.size = 0;
 	ops = get_instructions();
-	operator(ops, &a, &b);
-	is_sorted(&a, &b, 1);
+	if (!operator(ops, &a, &b))
+		is_sorted(&a, &b, 1);
 	clean_stacks(&a, &b);
 	free_ops(ops);
 }

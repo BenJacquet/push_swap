@@ -6,7 +6,7 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 13:56:37 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 15:21:26 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 17:09:48 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int		operator_2(t_op *ops, t_stack *a, t_stack *b)
 	return (1);
 }
 
-void	operator(t_op *ops, t_stack *a, t_stack *b)
+int		operator(t_op *ops, t_stack *a, t_stack *b)
 {
 	while (ops)
 	{
@@ -68,7 +68,8 @@ void	operator(t_op *ops, t_stack *a, t_stack *b)
 		else
 		{
 			ft_putstr_fd("Error\n", 2);
-			return ;
+			return (1);
 		}
 	}
+	return (0);
 }
