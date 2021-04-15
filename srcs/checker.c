@@ -6,7 +6,7 @@
 /*   By: jabenjam <jabenjam@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/04/15 13:56:20 by jabenjam          #+#    #+#             */
-/*   Updated: 2021/04/15 15:20:19 by jabenjam         ###   ########.fr       */
+/*   Updated: 2021/04/15 15:54:13 by jabenjam         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ void	checker_core(char **args)
 	b.size = 0;
 	ops = get_instructions();
 	operator(ops, &a, &b);
+	is_sorted(&a, &b, 1);
 	clean_stacks(&a, &b);
 	free_ops(ops);
 }
